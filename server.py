@@ -62,6 +62,34 @@ def create_teachers_table():
 create_students_table()
 create_teachers_table()
 
+# Function to establish database connection for courses
+def connect_to_courses_db():
+    conn = psycopg2.connect(
+        host=DB_HOST,
+        dbname=DB_NAME_TEACHERS,  # Assuming teachers' database for courses
+        user=DB_USER,
+        password=DB_PASSWORD
+    )
+    return conn
+
+# Function to create course table if not exists
+def create_course_table():
+    conn = connect_to_courses_db()
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS courses (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) UNIQUE,
+            description TEXT,
+            teacher_id INTEGER
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+# Initialize course table
+create_course_table()
+
 @app.route('/')
 def login_page():
     return render_template('login.html')
@@ -128,14 +156,39 @@ def login():
     conn.close()
 
     if user:
-        return redirect(url_for('dashboard'))
+        if user_type == 'student':
+            return redirect(url_for('student_dashboard'))
+        elif user_type == 'teacher':
+            return redirect(url_for('teacher_dashboard'))
     else:
         error_message = "Incorrect username or password. Please try again."
         return render_template('login.html', error=error_message)
 
-@app.route('/dashboard')
-def dashboard():
-    return "Welcome to the dashboard!"
+@app.route('/student/dashboard')
+def student_dashboard():
+    # For students, display scenarios related to course management
+    return render_template('student_dashboard.html')
+
+@app.route('/teacher/dashboard')
+def teacher_dashboard():
+    # For teachers, display course creation page
+    return render_template('teacher_dashboard.html')
+
+@app.route('/create_course', methods=['POST'])
+def create_course():
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        teacher_id = request.form['teacher_id']
+        
+        # Insert new course into the database
+        conn = connect_to_courses_db()
+        cur = conn.cursor()
+        cur.execute("INSERT INTO courses (name, description, teacher_id) VALUES (%s, %s, %s)", (name, description, teacher_id))
+        conn.commit()
+        conn.close()
+        
+        return redirect(url_for('teacher_dashboard'))
 
 if __name__ == '__main__':
     app.run(debug=True)
