@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Catalog</title>
+</head>
+<body>
+    <h1>Course Catalog</h1>
+    <p>Welcome, {{ username }}!</p>
+    <h2>Available Courses:</h2>
+    <ul>
+        {% for course in courses %}
+        <li>
+            <form action="/enroll_course" method="post">
+                <input type="hidden" name="course_id" value="{{ course[0] }}">
+                <input type="hidden" name="username" value="{{ username }}">
+                <strong>{{ course[1] }}</strong> - {{ course[2] }} <button type="submit">Enroll</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/">Logout</a>
+</body>
+</html>

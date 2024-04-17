@@ -6,11 +6,40 @@
     <title>Student Dashboard</title>
 </head>
 <body>
-    <h2>Student Dashboard</h2>
-    <h3>Scenarios:</h3>
-    <ul>
-        <li><a href="#">Enroll in a Course</a></li>
-        <li><a href="#">Drop a Course</a></li>
+    <h2>Welcome, {{ username }}!</h2>
+    <h3>Enrolled Courses:</h3>
+    <ul id="enrolled-courses">
+        <!-- Enrolled courses will be displayed here -->
     </ul>
+
+    <script>
+        // Fetch enrolled courses when the page loads
+        window.addEventListener('load', function() {
+            fetchEnrolledCourses();
+        });
+
+        function fetchEnrolledCourses() {
+            // Fetch enrolled courses using AJAX
+            fetch('/enrolled_courses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: "{{ username }}" })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const enrolledCourses = data.enrolled_courses;
+                const enrolledCoursesList = document.getElementById('enrolled-courses');
+                enrolledCoursesList.innerHTML = ''; // Clear previous list
+                enrolledCourses.forEach(course => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${course.name} - ${course.description}`;
+                    enrolledCoursesList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching enrolled courses:', error));
+        }
+    </script>
 </body>
 </html>
