@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+</head>
+<body>
+    <h2>Teacher Dashboard</h2>
+    <h3>Create a Course:</h3>
+    <form action="/create_course" method="POST">
+        <input type="text" name="name" placeholder="Course Name" required><br>
+        <textarea name="description" placeholder="Course Description" required></textarea><br>
+        <input type="hidden" name="teacher_id" value="1"> <!-- Assuming teacher's ID is 1 for now -->
+        <button type="submit">Create Course</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enroll Course</title>
+</head>
+<body>
+    <h1>Enroll in Course</h1>
+    <form action="/enroll_course" method="post">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br>
+        <input type="hidden" name="course_id" value="{{ course_id }}">
+        <button type="submit">Enroll</button>
+    </form>
+</body>
+</html>
